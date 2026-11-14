@@ -128,7 +128,7 @@ $ pytest -q
   sem resposta segura, a decisão foi não inventar regra.
 - **BOM UTF-8**: CSVs com BOM (como o Excel grava) são rejeitados com "colunas obrigatórias
   ausentes", pois a leitura usa `utf-8` estrito; os dados do desafio não têm BOM. A melhoria
-  seria `encoding="utf-8-sig"` nos dois repositórios — decidimos não aplicar para manter o diff
+  seria `encoding="utf-8-sig"` nos dois repositórios — decidi não aplicar para manter o diff
   mínimo.
 - **Memória**: o arquivo é materializado em lista (O(n) de espaço), adequado à escala do desafio
   (centenas de linhas, < 1 MB). Para milhões de linhas, a evolução seria transformar o
