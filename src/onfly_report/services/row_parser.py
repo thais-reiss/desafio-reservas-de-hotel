@@ -8,6 +8,8 @@ from decimal import Decimal, InvalidOperation
 from ..exceptions import InputFileError
 from ..models import RawRow, Reservation
 
+VALID_STATUSES = frozenset({"CONFIRMED", "CANCELLED", "NO_SHOW"})
+
 
 class RowParser:
     """Converte a linha crua em Reservation.
@@ -19,7 +21,7 @@ class RowParser:
     def parse(self, raw: RawRow) -> Reservation:
         values = raw.values
         try:
-            return Reservation(
+            reservation = Reservation(
                 reservation_id=(values.get("reservation_id") or "").strip(),
                 traveler_name=(values.get("traveler_name") or "").strip(),
                 company_id=(values.get("company_id") or "").strip(),
@@ -38,3 +40,18 @@ class RowParser:
             )
         except (ValueError, InvalidOperation) as err:
             raise InputFileError(f"linha {raw.line_number} inválida: {err}") from err
+
+        if reservation.status not in VALID_STATUSES:
+            raise InputFileError(
+                f"linha {raw.line_number} inválida: status desconhecido: {reservation.status!r}"
+            )
+        if reservation.checkout < reservation.checkin:
+            raise InputFileError(
+                f"linha {raw.line_number} inválida: check-out ({reservation.checkout}) "
+                f"anterior ao check-in ({reservation.checkin})"
+            )
+        if reservation.rooms < 1:
+            raise InputFileError(
+                f"linha {raw.line_number} inválida: rooms deve ser >= 1, veio {reservation.rooms}"
+            )
+        return reservation
