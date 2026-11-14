@@ -60,6 +60,10 @@ disparam no caminho feliz — elas trocam o modo de falha de "número errado sil
 - **`currency_converter`**: moeda sem taxa na tabela vira `InputFileError` nomeando a moeda
   (antes era `KeyError`, que saía com código 1 — "erro inesperado" — em vez de 2).
 
+**Decisão sobre arquitetura**
+
+A estrutura original já apresentava separação de responsabilidades entre repositórios, serviços, modelos e interface CLI. Por isso, optei por preservar a arquitetura existente e concentrar as alterações na correção dos defeitos e nas validações necessárias, evitando uma refatoração estrutural sem necessidade identificada.
+
 ## Testes adicionais (`tests/test_additional.py`)
 
 49 testes derivados por **particionamento de equivalência** e **análise de valor limite**,
